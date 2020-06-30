@@ -2,13 +2,13 @@ import axios from "@/axios/axios-event-service";
 
 export default {
     actions: {
-        async registration(ctx, user = {}) {
+        async registration(ctx, data = {}) {
             const requestData = {
-                username: user.username,
-                email: user.email,
-                password: user.password
+                username: data.username,
+                email: data.email,
+                password: data.password
             };
-            let url = "auth/register";
+            const url = "auth/register";
 
             const options = {
                 method: "POST",
@@ -28,12 +28,12 @@ export default {
                 });
 
         },
-        async authorization(ctx, user = {}) {
+        async authorization(ctx, data = {}) {
             const requestData = {
-                username: user.username,
-                password: user.password
+                username: data.username,
+                password: data.password
             };
-            let url = "auth/login";
+            const url = "auth/login";
 
             const options = {
                 method: "POST",
@@ -46,11 +46,59 @@ export default {
 
             await axios(options)
                 .then(response => {
+                    const user = {
+                        userData: response.data.user,
+                        userToken: response.data.token
+                    }
+                    localStorage.setItem('token', user.userToken)
+                    ctx.commit('authSuccess', user)
                     ctx.commit('successMessage', "You are successfully logged in")
                 })
                 .catch(error => {
                     ctx.commit('errorMessage', "Username ot Password is incorrect")
                 });
+        },
+        autoLogin(ctx) {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Token ' + token,
+                    },
+                    url: "auth/user"
+                };
+
+                axios(options)
+                    .then((response) => {
+                        const user = {
+                            userData: response.data,
+                            userToken: token
+                        }
+                        ctx.commit('authSuccess', user)
+                    })
+                    .catch(error => {
+                        ctx.commit('logout')
+                    })
+
+            } else {
+                ctx.commit('logout')
+            }
+        },
+        logout(ctx) {
+            const token = localStorage.getItem('token')
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Token ' + token,
+                },
+                url: "auth/logout"
+            };
+
+            axios(options)
+                .then(() => {
+                    ctx.commit('logout')
+                })
         }
     },
     mutations: {
@@ -61,6 +109,17 @@ export default {
         errorMessage(state, message) {
             state.successMessage = "";
             state.errorMessage = message;
+        },
+        authSuccess(state, user) {
+            state.currentUser = user.userData
+            state.userToken = user.userToken
+        },
+        logout(state) {
+            localStorage.removeItem('token')
+            state.userToken = ""
+            state.currentUser = {}
+            state.errorMessage = "";
+            state.successMessage = "";
         }
     },
     state: {

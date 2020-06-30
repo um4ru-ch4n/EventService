@@ -71,6 +71,9 @@ export default {
 						password: this.password
 					};
 					this.registration(user);
+					this.username = ""
+					this.email = ""
+					this.password = ""
 				} else {
 					this.errorMessage(
 						"The 'Password' must contain at least 6 characters"

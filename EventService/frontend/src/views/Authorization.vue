@@ -47,15 +47,23 @@ export default {
 		"getErrorMessage",
 		"getSucсessMessage"
 	]),
+	mounted() {
+		this.successMessage("")
+	},
 	methods: {
 		...mapActions(["authorization"]),
-		...mapMutations(["errorMessage"]),
+		...mapMutations(["errorMessage", "successMessage"]),
 		onLoginFormSubmit() {
 			const user = {
 				username: this.username,
 				password: this.password
 			}
 			this.authorization(user);
+			this.username = ""
+			this.password = ""
+			if (this.successMessage) {
+				this.$router.push('/')
+			}
 		}
 	}
 };

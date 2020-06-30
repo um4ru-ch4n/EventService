@@ -1,8 +1,10 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
 
 class Event(models.Model):
     id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField('Название события', max_length=100)
     content = models.TextField('Содержание проекта', blank=True)
     eventDate = models.DateTimeField('Дата события')

@@ -12,46 +12,17 @@
 
 <script>
 import Header from "@/components/Header";
+import { mapActions } from "vuex";
 
 export default {
 	components: {
 		Header
 	},
 	mounted() {
-		
+		this.autoLogin()
 	},
 	methods: {
-		autoLogin() {
-			const token = localStorage.getItem("token");
-			if (token) {
-				const options = {
-					method: "GET",
-					headers: {
-						Authorization: "Token " + token
-					},
-					url: "auth/user"
-				};
-
-				axios(options)
-					.then(response => {
-						authSuccess(response.data, token);
-					})
-					.catch(error => {
-						logout();
-					});
-			} else {
-				logout();
-			}
-		},
-		authSuccess(user, token) {
-			this.currentUser = user
-			this.token = token
-		},
-		logout() {
-			this.currentUser = {}
-			this.token = ""
-			localStorage.removeItem('token')
-		}
+		...mapActions(["autoLogin"]),
 	}
 };
 </script>

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .serializers import EventSerializer
 from .models import Event
 
+
 class CreateEventAPI(generics.GenericAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
@@ -12,7 +13,9 @@ class CreateEventAPI(generics.GenericAPIView):
     serializer_class = EventSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data
+        data["user"] = request.user.id
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         event = serializer.save()
 
@@ -62,11 +65,16 @@ class DeleteEventAPI(generics.GenericAPIView):
         }, status=status.HTTP_200_OK)
 
 
-class EventView(viewsets.ReadOnlyModelViewSet):
+class EventView(generics.GenericAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
 
     serializer_class = EventSerializer
 
-    queryset = Event.objects.all()
+    def get(self, request, *args, **kwargs):
+        events = list(map(lambda event: EventSerializer(
+            event, context=self.get_serializer_context()).data, Event.objects.filter(user=request.user.id)))
+        return Response({
+            "events": events,
+        })
