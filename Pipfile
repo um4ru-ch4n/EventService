@@ -8,12 +8,12 @@ pylint = "*"
 autopep8 = "*"
 
 [packages]
-django = "*"
-djangorestframework = "*"
-psycopg2 = "*"
-corsheaders = "*"
-django-cors-headers = "*"
-django-rest-knox = "*"
+djangorestframework = "==3.11.0"
+psycopg2 = "==2.8.4"
+django-cors-headers = "==3.2.1"
+django-rest-knox = "==4.1.0"
+pytz = "==2019.3"
+Django = "==3.0.5"
 
 [requires]
 python_version = "3.8"
