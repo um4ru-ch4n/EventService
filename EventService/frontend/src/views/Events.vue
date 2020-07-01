@@ -90,10 +90,7 @@ export default {
 				event =>
 					event.title.toUpperCase().indexOf(name.toUpperCase()) !== -1
 			);
-		}
-	},
-	computed: {
-		...mapGetters(["getEvents"]),
+		},
 		filterEvents() {
 			if (this.filter === "all") {
 				this.events = this.getEvents
@@ -135,6 +132,9 @@ export default {
 				);
 			}
 		}
+	},
+	computed: {
+		...mapGetters(["getEvents"])
 	}
 };
 </script>
