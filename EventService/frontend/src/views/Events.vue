@@ -1,18 +1,42 @@
 <template>
-	<div id="add-event-form">
-		<form>
-			<div class="form-group">
-				<label for="select-input">Фильтр</label>
-				<select class="form-control" id="select-input" v-model="filter">
-					<option value="all">All</option>
-					<option value="completed">Completed</option>
-					<option value="not-completed">Not Completed</option>
-				</select>
+	<div>
+		<div class="btn-group">
+			<button
+				class="btn btn-primary dropdown-toggle"
+				type="button"
+				id="create-event-dropdown"
+				data-toggle="dropdown"
+				aria-haspopup="true"
+				aria-expanded="false"
+				v-on:click="onCreateEventButtonClick"
+			>Create new event</button>
+			<div class="dropdown-menu" aria-labelledby="create-event-dropdown">
+				<CreateEvent />
 			</div>
-		</form>
+		</div>
+		<div id="event-filter-form">
+			<form @submit.prevent="onLoginFormSubmit">
+				<div class="form-group">
+					<label for="select-input">Фильтр</label>
+					<select class="form-control" id="select-input" v-model="filter">
+						<option value="all">All</option>
+						<option value="lastMonth">Last month</option>
+						<option value="lastWeek">Last week</option>
+						<option value="lastDay">Last day</option>
+					</select>
+				</div>
+			</form>
+		</div>
 		<Loader v-if="loading" />
-		<ul v-else-if="!!getEvents">
-			<li v-for="event in getEvents" :key="event.id">{{event.title}}</li>
+		<ul v-else-if="!!filterEvents">
+			<EventItem
+				v-for="(event, index) in filterEvents"
+				:key="event.id"
+				v-bind:event="event"
+				v-bind:index="index + 1"
+				v-on:remove-event="removeEvent"
+				v-on:event-change-done="eventChangeDone"
+			/>
 		</ul>
 		<p v-else>No events!</p>
 	</div>
@@ -20,7 +44,9 @@
 
 <script>
 import Loader from "@/components/Loader";
-import { mapActions, mapGetters } from "vuex";
+import CreateEvent from "@/components/CreateEvent";
+import EventItem from "@/components/EventItem";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
 	data() {
@@ -30,36 +56,80 @@ export default {
 		};
 	},
 	components: {
-		Loader
+		Loader,
+		CreateEvent,
+		EventItem
 	},
-	mounted() {
-		this.fetchEvents();
+	async beforeMount() {
+		await this.fetchEvents();
 		this.loading = false;
 	},
 	methods: {
-		...mapActions(["fetchEvents", "createEvent"])
+		...mapActions(["fetchEvents", "deleteEvent", "updateEvent"]),
+		...mapMutations(["successMessage"]),
+		onCreateEventButtonClick() {
+			this.successMessage("");
+		},
+		removeEvent(id) {
+			this.deleteEvent(id)
+		},
+		eventChangeDone(id) {
+			this.updateEvent(id)
+		}
 	},
 	computed: {
-		...mapGetters(["getEvents"])
-		/* filterTodos() {
+		...mapGetters(["getEvents"]),
+		filterEvents() {
+			let events = []
 			if (this.filter === "all") {
-				return this.todos
+				events = this.getEvents;
 			}
 
-			if (this.filter === "completed") {
-				return this.todos.filter(t => t.completed)
+			if (this.filter === "lastMonth") {
+				events = this.getEvents.filter(
+					t =>
+						Math.abs(new Date(t.eventDate) - new Date()) /
+							1000 /
+							60 /
+							60 /
+							24 <=
+						30
+				);
 			}
-			
-			if (this.filter === "not-completed") {
-				return this.todos.filter(t => !t.completed)
+
+			if (this.filter === "lastWeek") {
+				events = this.getEvents.filter(
+					t =>
+						Math.abs(new Date(t.eventDate) - new Date()) /
+							1000 /
+							60 /
+							60 /
+							24 <=
+						7
+				);
 			}
-		} */
+
+			if (this.filter === "lastDay") {
+				events = this.getEvents.filter(
+					t =>
+						Math.abs(new Date(t.eventDate) - new Date()) /
+							1000 /
+							60 /
+							60 /
+							24 <=
+						1
+				);
+			}
+
+			return events
+		}
 	}
 };
 </script>
 
 <style scoped>
-#add-event-form {
+#event-filter-form {
 	width: 400px;
+	margin-top: 50px;
 }
 </style>

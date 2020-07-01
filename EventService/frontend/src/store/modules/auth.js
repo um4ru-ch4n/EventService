@@ -135,10 +135,10 @@ export default {
         getUserToken(state) {
             return state.userToken
         },
-        getErrorMessage(state) {
+        getAuthErrorMessage(state) {
             return state.errorMessage
         },
-        getSucсessMessage(state) {
+        getAuthSucсessMessage(state) {
             return state.successMessage
         }
     }

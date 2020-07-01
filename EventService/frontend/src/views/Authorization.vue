@@ -21,14 +21,14 @@
 				class="alert alert-danger"
 				role="alert"
 				style="margin-top: 10px;"
-				v-if="!!getErrorMessage"
-			>{{getErrorMessage}}</div>
+				v-if="!!getAuthErrorMessage"
+			>{{getAuthErrorMessage}}</div>
 			<div
 				class="alert alert-success"
 				role="alert"
 				style="margin-top: 10px;"
-				v-if="!!getSucсessMessage"
-			>{{getSucсessMessage}}</div>
+				v-if="!!getAuthSucсessMessage"
+			>{{getAuthSucсessMessage}}</div>
 		</form>
 	</div>
 </template>
@@ -44,8 +44,8 @@ export default {
 		};
 	},
 	computed: mapGetters([
-		"getErrorMessage",
-		"getSucсessMessage"
+		"getAuthErrorMessage",
+		"getAuthSucсessMessage"
 	]),
 	mounted() {
 		this.successMessage("")
