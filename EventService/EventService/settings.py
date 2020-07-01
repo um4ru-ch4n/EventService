@@ -87,7 +87,6 @@ ROOT_URLCONF = 'EventService.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'DIRS': [os.path.join(BASE_DIR, 'frontend/dist'), os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -162,3 +161,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/dist/js'),
     os.path.join(BASE_DIR, 'frontend/dist/css'),
 ]
+
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = "17515561@mail.ru"
+EMAIL_HOST_PASSWORD = "gthley3102YELHTG2013"
+EMAIL_USE_TLS = True
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
