@@ -31,7 +31,7 @@
 			<div class="form-group">
 				<label for="done-input">Done</label>
 				<input
-                    style="margin-left: 10px;"
+					style="margin-left: 10px;"
 					type="checkbox"
 					class="form-check-inline"
 					id="done-input"
@@ -66,25 +66,29 @@ export default {
 			title: "",
 			content: "",
 			date: "",
-            minDate: "",
-            done: false,
-            currentEvent: {},
+			minDate: "",
+			done: false,
+			currentEvent: {}
 		};
 	},
-	computed: mapGetters(["getEventErrorMessage", "getEventSucсessMessage", "getEvents"]),
-	async beforeMount() {
-        let curEvent = 0
-        this.getEvents.forEach(event => {
-            if (event.id === this.$route.params.id) {
-                curEvent = this.getEvents.indexOf(event)
-            }
-        });
-        this.title = this.getEvents[curEvent].title
-		this.content = this.getEvents[curEvent].content
-		this.date = this.getEvents[curEvent].eventDate.slice(0, -6)
-        this.minDate = await this.getDateTimeForInput()
-        this.done = this.getEvents[curEvent].done
-        this.currentEvent = this.getEvents[curEvent]
+	computed: mapGetters([
+		"getEventErrorMessage",
+		"getEventSucсessMessage",
+		"getEvents"
+	]),
+	async mounted() {
+		let curEvent = 0;
+		this.getEvents.forEach(event => {
+			if (event.id === Number.parseInt(this.$route.params.id)) {
+				curEvent = this.getEvents.indexOf(event);
+			}
+		});
+		this.title = this.getEvents[curEvent].title;
+		this.content = this.getEvents[curEvent].content;
+		this.date = this.getEvents[curEvent].eventDate.slice(0, -6);
+		this.minDate = await this.getDateTimeForInput();
+		this.done = this.getEvents[curEvent].done;
+		this.currentEvent = this.getEvents[curEvent];
 	},
 	beforeDestroy() {
 		this.successMessage("");
@@ -94,11 +98,10 @@ export default {
 		...mapMutations(["errorMessage", "successMessage"]),
 		onUpdateEventFormSubmit() {
 			if (this.title.trim() && this.title.length >= 3) {
-
-                this.currentEvent.title = this.title
-                this.currentEvent.content = this.content
-                this.currentEvent.eventDate = this.date
-                this.currentEvent.done = this.done
+				this.currentEvent.title = this.title;
+				this.currentEvent.content = this.content;
+				this.currentEvent.eventDate = this.date;
+				this.currentEvent.done = this.done;
 				this.updateEvent(this.currentEvent);
 			} else {
 				this.errorMessage(

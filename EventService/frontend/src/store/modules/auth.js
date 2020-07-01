@@ -58,7 +58,7 @@ export default {
                     ctx.commit('errorMessage', "Username ot Password is incorrect")
                 });
         },
-        autoLogin(ctx) {
+        async autoLogin(ctx) {
             const token = localStorage.getItem('token');
             if (token) {
                 const options = {
@@ -69,7 +69,7 @@ export default {
                     url: "auth/user"
                 };
 
-                axios(options)
+                await axios(options)
                     .then((response) => {
                         const user = {
                             userData: response.data,
@@ -85,7 +85,7 @@ export default {
                 ctx.commit('logout')
             }
         },
-        logout(ctx) {
+        async logout(ctx) {
             const token = localStorage.getItem('token')
             const options = {
                 method: 'POST',
@@ -95,7 +95,7 @@ export default {
                 url: "auth/logout"
             };
 
-            axios(options)
+            await axios(options)
                 .then(() => {
                     ctx.commit('logout')
                 })

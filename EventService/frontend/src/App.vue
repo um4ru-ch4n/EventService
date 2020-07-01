@@ -18,8 +18,8 @@ export default {
 	components: {
 		Header
 	},
-	mounted() {
-		this.autoLogin()
+	async beforeMount() {
+		await this.autoLogin()
 	},
 	methods: {
 		...mapActions(["autoLogin"]),

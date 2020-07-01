@@ -92,9 +92,11 @@ export default {
             const url = "update_event"
             const token = localStorage.getItem("token")
             let upEvent = {}
+            let upEventIndex = 0
             ctx.state.events.forEach(event => {
                 if (event.id === id) {
                     upEvent = event
+                    upEventIndex = ctx.state.events.indexOf(event)
                 }
             });
             const requestData = {
@@ -117,7 +119,8 @@ export default {
 
             await axios(options)
                 .then(() => {
-                    ctx.dispatch('fetchEvents')
+                    // ctx.dispatch('fetchEvents')
+                    ctx.commit('doneEventChange', upEventIndex)
                 })
         },
         async updateEvent(ctx, upEvent) {
@@ -161,7 +164,7 @@ export default {
             state.events = events
         },
         addEvent(state, event) {
-            state.events.unshift(event)
+            state.events.push(event)
         },
         removeEvent(state, id) {
             let delEvent = 0
@@ -171,12 +174,16 @@ export default {
                 }
             });
             state.events.splice(delEvent, 1)
+        },
+        doneEventChange(state, index) {
+            state.events[index].done = !state.events[index].done
         }
     },
     state: {
         events: [],
         errorMessage: "",
         successMessage: "",
+        currentEvent: {}
     },
     getters: {
         getEvents(state) {
@@ -187,6 +194,6 @@ export default {
         },
         getEventSucсessMessage(state) {
             return state.successMessage
-        }
+        },
     }
 }
