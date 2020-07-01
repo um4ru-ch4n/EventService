@@ -1,8 +1,11 @@
 from rest_framework import generics, permissions, viewsets, status
 from rest_framework.response import Response
+from django.core.mail import send_mail
 
 from .serializers import EventSerializer
 from .models import Event
+
+from django.conf import settings
 
 
 class CreateEventAPI(generics.GenericAPIView):
@@ -18,6 +21,10 @@ class CreateEventAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         event = serializer.save()
+
+        # if event:
+        #     text = "Через час начнется событие!\n\n" + event.content
+        #     send_mail(event.title, text, settings.EMAIL_HOST_USER, [request.user.email])
 
         return Response({
             "event": EventSerializer(event, context=self.get_serializer_context()).data,

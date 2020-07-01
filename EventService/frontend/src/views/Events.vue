@@ -14,23 +14,28 @@
 				<CreateEvent />
 			</div>
 		</div>
-		<div id="event-filter-form">
-			<form @submit.prevent="onLoginFormSubmit">
-				<div class="form-group">
-					<label for="select-input">Фильтр</label>
-					<select class="form-control" id="select-input" v-model="filter">
-						<option value="all">All</option>
-						<option value="lastMonth">Last month</option>
-						<option value="lastWeek">Last week</option>
-						<option value="lastDay">Last day</option>
-					</select>
-				</div>
-			</form>
+		<div class="row">
+			<div id="event-filter-form" class="col">
+				<form @submit.prevent="onLoginFormSubmit">
+					<div class="form-group">
+						<label for="select-input">Filter</label>
+						<select class="form-control" id="select-input" v-model="filter" @change="filterEvents">
+							<option value="all">All</option>
+							<option value="lastMonth">Last month</option>
+							<option value="lastWeek">Last week</option>
+							<option value="lastDay">Last day</option>
+						</select>
+					</div>
+				</form>
+			</div>
+			<div id="search-events" class="col">
+				<SearchEvents v-on:search-events="searchEvents" />
+			</div>
 		</div>
 		<Loader v-if="loading" />
-		<ul v-else-if="!!filterEvents">
+		<ul v-else-if="!!events">
 			<EventItem
-				v-for="(event, index) in filterEvents"
+				v-for="(event, index) in events"
 				:key="event.id"
 				v-bind:event="event"
 				v-bind:index="index + 1"
@@ -46,23 +51,27 @@
 import Loader from "@/components/Loader";
 import CreateEvent from "@/components/CreateEvent";
 import EventItem from "@/components/EventItem";
+import SearchEvents from "@/components/SearchEvents";
 import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
 	data() {
 		return {
 			loading: true,
-			filter: "all"
+			filter: "all",
+			events: []
 		};
 	},
 	components: {
 		Loader,
 		CreateEvent,
-		EventItem
+		EventItem,
+		SearchEvents
 	},
 	async beforeMount() {
-		await this.fetchEvents();
-		this.loading = false;
+		await this.fetchEvents()
+		this.events = this.getEvents
+		this.loading = false
 	},
 	methods: {
 		...mapActions(["fetchEvents", "deleteEvent", "doneEvent"]),
@@ -71,22 +80,27 @@ export default {
 			this.successMessage("");
 		},
 		removeEvent(id) {
-			this.deleteEvent(id)
+			this.deleteEvent(id);
 		},
 		eventChangeDone(id) {
-			this.doneEvent(id)
+			this.doneEvent(id);
+		},
+		searchEvents(name) {
+			this.events = this.getEvents.filter(
+				event =>
+					event.title.toUpperCase().indexOf(name.toUpperCase()) !== -1
+			);
 		}
 	},
 	computed: {
 		...mapGetters(["getEvents"]),
 		filterEvents() {
-			let events = []
 			if (this.filter === "all") {
-				events = this.getEvents;
+				this.events = this.getEvents
 			}
 
 			if (this.filter === "lastMonth") {
-				events = this.getEvents.filter(
+				this.events = this.getEvents.filter(
 					t =>
 						Math.abs(new Date(t.eventDate) - new Date()) /
 							1000 /
@@ -98,7 +112,7 @@ export default {
 			}
 
 			if (this.filter === "lastWeek") {
-				events = this.getEvents.filter(
+				this.events = this.getEvents.filter(
 					t =>
 						Math.abs(new Date(t.eventDate) - new Date()) /
 							1000 /
@@ -110,7 +124,7 @@ export default {
 			}
 
 			if (this.filter === "lastDay") {
-				events = this.getEvents.filter(
+				this.events = this.getEvents.filter(
 					t =>
 						Math.abs(new Date(t.eventDate) - new Date()) /
 							1000 /
@@ -120,8 +134,6 @@ export default {
 						1
 				);
 			}
-
-			return events
 		}
 	}
 };
@@ -131,5 +143,9 @@ export default {
 #event-filter-form {
 	width: 400px;
 	margin-top: 50px;
+}
+
+#search-events {
+	margin-top: 81px;
 }
 </style>

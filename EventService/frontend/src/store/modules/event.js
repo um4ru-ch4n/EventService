@@ -179,9 +179,6 @@ export default {
         successMessage: "",
     },
     getters: {
-        getCurrentEvent(state) {
-            return state.currentEvent
-        },
         getEvents(state) {
             return state.events
         },
