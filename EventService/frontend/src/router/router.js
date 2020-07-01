@@ -8,7 +8,7 @@ import middlewarePipeline from './middlewarePipeline'
 
 Vue.use(Router)
 
-const router =  new Router({
+const router = new Router({
     mode: 'history',
     routes: [
         {
@@ -20,6 +20,15 @@ const router =  new Router({
             path: '/events',
             name: 'events',
             component: () => import('@/views/Events.vue'),
+            meta: {
+                middleware: [
+                    auth
+                ]
+            }
+        },
+        {
+            path: '/events/:id',
+            component: () => import('@/views/CurrentEvent.vue'),
             meta: {
                 middleware: [
                     auth
@@ -56,9 +65,9 @@ const router =  new Router({
                 ]
             }
         },
-        { 
-            path: '*', 
-            redirect: "/" 
+        {
+            path: '*',
+            redirect: "/"
         }
     ]
 })

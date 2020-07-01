@@ -53,15 +53,15 @@ export default {
 	methods: {
 		...mapActions(["authorization"]),
 		...mapMutations(["errorMessage", "successMessage"]),
-		onLoginFormSubmit() {
+		async onLoginFormSubmit() {
 			const user = {
 				username: this.username,
 				password: this.password
 			}
-			this.authorization(user);
-			this.username = ""
-			this.password = ""
-			if (this.successMessage) {
+			await this.authorization(user);
+			if (this.getAuthSucсessMessage) {
+				this.username = ""
+				this.password = ""
 				this.$router.push('/')
 			}
 		}

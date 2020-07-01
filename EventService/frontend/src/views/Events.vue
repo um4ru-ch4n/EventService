@@ -65,7 +65,7 @@ export default {
 		this.loading = false;
 	},
 	methods: {
-		...mapActions(["fetchEvents", "deleteEvent", "updateEvent"]),
+		...mapActions(["fetchEvents", "deleteEvent", "doneEvent"]),
 		...mapMutations(["successMessage"]),
 		onCreateEventButtonClick() {
 			this.successMessage("");
@@ -74,7 +74,7 @@ export default {
 			this.deleteEvent(id)
 		},
 		eventChangeDone(id) {
-			this.updateEvent(id)
+			this.doneEvent(id)
 		}
 	},
 	computed: {

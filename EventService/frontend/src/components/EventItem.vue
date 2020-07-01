@@ -3,7 +3,7 @@
         <span v-bind:class="{done: event.done}">
             <input type="checkbox" v-on:change="$emit('event-change-done', event.id)" v-bind:checked="event.done">
             <strong>{{index}}</strong>
-            {{event.title | uppercase}}
+            <router-link v-bind:to="'/events/' + event.id">{{event.title | uppercase}}</router-link>
         </span>
         <button class="rm" v-on:click="$emit('remove-event', event.id)">&times;</button>
     </li>

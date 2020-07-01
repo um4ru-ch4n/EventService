@@ -44,25 +44,25 @@ export default {
                 })
         },
         getDateTimeForInput(ctx, date = new Date()) {
-			return (
-				date.getFullYear() +
-				"-" +
-				((date.getMonth() + 1 + "").length === 1
-					? "0" + (date.getMonth() + 1)
-					: date.getMonth() + 1) +
-				"-" +
-				((date.getDate() + "").length === 1
-					? "0" + date.getDate()
-					: date.getDate()) +
-				"T" +
-				((date.getHours() + "").length === 1
-					? "0" + date.getHours()
-					: date.getHours()) +
-				":" +
-				((date.getMinutes() + "").length === 1
-					? "0" + date.getMinutes()
-					: date.getMinutes())
-			);
+            return (
+                date.getFullYear() +
+                "-" +
+                ((date.getMonth() + 1 + "").length === 1
+                    ? "0" + (date.getMonth() + 1)
+                    : date.getMonth() + 1) +
+                "-" +
+                ((date.getDate() + "").length === 1
+                    ? "0" + date.getDate()
+                    : date.getDate()) +
+                "T" +
+                ((date.getHours() + "").length === 1
+                    ? "0" + date.getHours()
+                    : date.getHours()) +
+                ":" +
+                ((date.getMinutes() + "").length === 1
+                    ? "0" + date.getMinutes()
+                    : date.getMinutes())
+            );
         },
         async deleteEvent(ctx, id) {
             const url = "delete_event"
@@ -88,7 +88,7 @@ export default {
                     ctx.commit('errorMessage', 'Error removing the event')
                 })
         },
-        async updateEvent(ctx, id) {
+        async doneEvent(ctx, id) {
             const url = "update_event"
             const token = localStorage.getItem("token")
             let upEvent = {}
@@ -96,14 +96,14 @@ export default {
                 if (event.id === id) {
                     upEvent = event
                 }
-			});
+            });
             const requestData = {
                 user: upEvent.user,
                 title: upEvent.title,
-	            content: upEvent.content,
-	            eventDate: upEvent.eventDate,
-	            done: !upEvent.done,
-	            id: id
+                content: upEvent.content,
+                eventDate: upEvent.eventDate,
+                done: !upEvent.done,
+                id: id
             }
             const options = {
                 method: 'POST',
@@ -118,6 +118,33 @@ export default {
             await axios(options)
                 .then(() => {
                     ctx.dispatch('fetchEvents')
+                })
+        },
+        async updateEvent(ctx, upEvent) {
+            const url = "update_event"
+            const token = localStorage.getItem("token")
+            const requestData = {
+                user: upEvent.user,
+                title: upEvent.title,
+                content: upEvent.content,
+                eventDate: upEvent.eventDate,
+                done: upEvent.done,
+                id: upEvent.id
+            }
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + token,
+                },
+                data: JSON.stringify(requestData),
+                url: url
+            }
+
+            await axios(options)
+                .then(() => {
+                    ctx.dispatch('fetchEvents')
+                    ctx.commit('successMessage', "Event was successfully updated")
                 })
         }
     },
@@ -148,7 +175,6 @@ export default {
     },
     state: {
         events: [],
-        currentEvent: {},
         errorMessage: "",
         successMessage: "",
     },

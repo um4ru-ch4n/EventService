@@ -8,7 +8,7 @@
 import { mapActions } from "vuex";
 
 export default {
-    mounted() {
+    beforeMount() {
         this.logout()
         this.$router.push('/')
 	},
