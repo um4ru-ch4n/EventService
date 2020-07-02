@@ -1,3 +1,6 @@
 node_modules
 .vscode
 Pipfile.lock
+storage
+celery*
+__pycache__
