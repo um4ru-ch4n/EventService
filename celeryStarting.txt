@@ -1,0 +1,2 @@
+celery -A EventService worker -l info -P gevent
+celery -A EventService beat -l info
