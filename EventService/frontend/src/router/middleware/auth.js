@@ -1,5 +1,5 @@
-export default function auth({ next, store }) {
-    if (!store.getters.getUserToken) {
+export default function auth({ next }) {
+    if (!localStorage.getItem('token')) {
         return next({
             name: 'authorization'
         })
