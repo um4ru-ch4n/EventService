@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'events',
     'knox',
     'accounts',
-    'frontend'
+    'frontend',
+    'emails'
 ]
 
 REST_FRAMEWORK = {
@@ -165,7 +166,14 @@ STATICFILES_DIRS = [
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
 EMAIL_HOST_USER = "17515561@mail.ru"
-EMAIL_HOST_PASSWORD = "gthley3102YELHTG2013"
+EMAIL_HOST_PASSWORD = "fkujhbnv9102_VNBHJUKF2019"
 EMAIL_USE_TLS = True
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Moscow'
