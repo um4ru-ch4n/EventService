@@ -1,16 +1,6 @@
 version: '3.7'
 
 services:
-  web:
-    build: .
-    restart: always
-    command: bash -c "python EventService/manage.py migrate && python EventService/manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
   db:
     image: postgres
     restart: always
@@ -18,4 +8,43 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: EventService
-      
+  redis:
+    image: redis
+    restart: always
+    volumes:
+      - ./storage/redis/data:/data
+    ports:
+      - 6379:6379
+  web:
+    build: .
+    restart: always
+    command: /bin/bash -c "cd EventService && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      TZ: Europe/Moscow
+  celery:
+    build: .
+    command: /bin/bash -c "cd EventService && celery -A EventService worker -l info -P gevent"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+    environment:
+      TZ: Europe/Moscow
+  celery-beat:
+    build: .
+    command: /bin/bash -c "cd EventService && celery -A EventService beat -l info"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+    environment:
+      TZ: Europe/Moscow
