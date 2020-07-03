@@ -85,7 +85,7 @@ export default {
 		});
 		this.title = this.getEvents[curEvent].title;
 		this.content = this.getEvents[curEvent].content;
-		this.date = this.getEvents[curEvent].eventDate.slice(0, -6);
+		this.date = this.getEvents[curEvent].eventDate;
 		this.minDate = await this.getDateTimeForInput();
 		this.done = this.getEvents[curEvent].done;
 		this.currentEvent = this.getEvents[curEvent];
