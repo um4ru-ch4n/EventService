@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: EventService
+      TZ: Europe/Moscow
+      PGTZ: Europe/Moscow
   redis:
     image: redis
     restart: always
@@ -15,6 +17,8 @@ services:
       - ./storage/redis/data:/data
     ports:
       - 6379:6379
+    environment:
+      TZ: Europe/Moscow
   web:
     build: .
     restart: always
